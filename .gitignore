@@ -1,0 +1,14 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Optimized_Word2Vec/2VecRunner/word2vecLib/obj/Debug/TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs
+/Optimized_Word2Vec/2VecRunner/word2vecLib/obj/Debug/TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs
+/Optimized_Word2Vec/2VecRunner/word2vecLib/obj/Debug/TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs
+/Optimized_Word2Vec/2VecRunner/word2vecLib/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+/Optimized_Word2Vec/2VecRunner/word2vecLib/obj/Debug/CoreCompileInputs.cache
+/Optimized_Word2Vec/2VecRunner/2VecRunner/obj/Debug/TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs
+/Optimized_Word2Vec/2VecRunner/2VecRunner/obj/Debug/TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs
+/Optimized_Word2Vec/2VecRunner/2VecRunner/obj/Debug/TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs
+/Optimized_Word2Vec/2VecRunner/2VecRunner/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+/Optimized_Word2Vec/2VecRunner/2VecRunner/obj/Debug/CoreCompileInputs.cache
