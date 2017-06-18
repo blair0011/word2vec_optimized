@@ -60,6 +60,9 @@ namespace word2vecLib
         // -window <int> Set max skip length between words; default is 5
         int window = 12;
 
+        [Option("doc2vec", DefaultValue = false, HelpText = "-doc2vec selects the doc2vec version of word2vec")]
+        public bool doc2vec { get; set; }
+
         [Option('t', "train", HelpText = "-train <file> Use text data from <file> to train the model")]
         public string Train { get => train; set => train = value; }
 

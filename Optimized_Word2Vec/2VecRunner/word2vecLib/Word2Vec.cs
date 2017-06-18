@@ -64,6 +64,7 @@ namespace word2vecLib
         private Stopwatch _stopwatch;
         private const int TableSize = (int)1e8;
         private int[] _table;
+        bool sentence_vectors = false;
 
         #endregion
 
@@ -74,7 +75,9 @@ namespace word2vecLib
         public Word2Vec(Options opt) : this(opt.Train,opt.Output,opt.Savevocab,opt.Readvocab,opt.Size,
             opt.Debug,opt.Binary,opt.Cbow,opt.Alpha,opt.Sample,opt.Hs,opt.Negative,opt.Threads, opt.Iter,
             opt.Mincount, opt.Classes, opt.Window)
-        { }
+        {
+            sentence_vectors = opt.doc2vec;
+        }
         
         /// <summary>
         /// Speciffically for Training on a Text Corpus of large quantity. The bigger the better generally.
@@ -169,7 +172,7 @@ namespace word2vecLib
         /// <summary>
         /// Gets a Hash for the Word.
         /// </summary>
-        private uint GetWordHash(string word)
+        public static uint GetWordHash(string word)
         {
             int a;
             ulong hash = 0;
@@ -424,17 +427,14 @@ namespace word2vecLib
             }
 
             _vocabSize = 0;
-            //Regex regex = new Regex("\\s");
             AddWordToVocab("</s>");
 
             foreach (string line in File.ReadLines(_trainFile))
             {
-                //string[] words = regex.Split(line);
                 IEnumerable<string> words = line.Trim().DeferredSplit(' ');
 
                 foreach (var word in words)
                 {
-                    // string cleanedWord = word.Clean();
                     if (string.IsNullOrWhiteSpace(word))
                         continue;
 
@@ -567,7 +567,6 @@ namespace word2vecLib
         /// <param name="id">Thread Id</param>
         private void TrainModelThread(int id)
         {
-            //Regex splitRegex = new Regex("\\s");
             long sentenceLength = 0;
             long sentencePosition = 0;
             long wordCount = 0, lastWordCount = 0;
@@ -583,7 +582,6 @@ namespace word2vecLib
 
             using (StreamReader fi = File.OpenText(_trainFile))
             {
-
                 fi.BaseStream.Seek(_fileSize / _numThreads * id, SeekOrigin.Begin);
 
                 while (true)
@@ -610,7 +608,6 @@ namespace word2vecLib
                         bool loopEnd = false;
                         while (!loopEnd && (line = fi.ReadLine()) != null)
                         {
-                            //string[] words = splitRegex.Split(line);
                             IEnumerable<string> words = line.Trim().DeferredSplit(' ');
 
                             foreach (var s in words)
@@ -701,7 +698,8 @@ namespace word2vecLib
 
                                 if (c >= sentenceLength)
                                     continue;
-
+                                if (sentence_vectors && (c == 0))
+                                    continue;
                                 lastWord = sen[c];
 
                                 if (lastWord == -1)
@@ -711,7 +709,13 @@ namespace word2vecLib
                                     neu1[c] += _syn0[c + lastWord * _layer1Size];
                                 cw++;
                             }
-
+                        if (sentence_vectors)
+                        {
+                            lastWord = sen[0];
+                            if (lastWord == -1) continue;
+                            for (c = 0; c < _layer1Size; c++) neu1[c] += _syn0[c + lastWord * _layer1Size];
+                            cw++;
+                        }
                         if (cw > 0)
                         {
                             for (c = 0; c < _layer1Size; c++)
@@ -794,6 +798,7 @@ namespace word2vecLib
 
                             // hidden -> in
                             for (var a = b; a < _window * 2 + 1 - b; a++)
+                            {
                                 if (a != _window)
                                 {
                                     c = sentencePosition - _window + a;
@@ -802,7 +807,8 @@ namespace word2vecLib
 
                                     if (c >= sentenceLength)
                                         continue;
-
+                                    if (sentence_vectors && (c == 0))
+                                        continue;
                                     lastWord = sen[c];
                                     if (lastWord == -1)
                                         continue;
@@ -810,6 +816,15 @@ namespace word2vecLib
                                     for (c = 0; c < _layer1Size; c++)
                                         _syn0[c + lastWord * _layer1Size] += neu1e[c];
                                 }
+                            }
+                            if (sentence_vectors)
+                            {
+                                lastWord = sen[0];
+                                if (lastWord == -1)
+                                    continue;
+                                for (c = 0; c < _layer1Size; c++)
+                                    _syn0[c + lastWord * _layer1Size] += neu1e[c];
+                            }
                         }
                     }
                     else
@@ -819,7 +834,9 @@ namespace word2vecLib
                             if (a != _window)
                             {
                                 c = sentencePosition - _window + a;
-
+                                if (sentence_vectors)
+                                    if (a >= _window * 2 + 1 - b)
+                                        c = 0;
                                 if (c < 0)
                                     continue;
                                 if (c >= sentenceLength)
