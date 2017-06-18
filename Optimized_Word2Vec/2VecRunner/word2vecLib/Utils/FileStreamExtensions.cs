@@ -18,7 +18,7 @@ namespace word2vecLib.Utils
         {
             var messageBuilder = new List<byte>();
             int abyte;
-            while ((abyte = (byte)stream.ReadByte()) != -1)
+            while ((abyte = stream.ReadByte()) != -1)
             {
                 byte byteAsInt = (byte)abyte;
                 if (byteAsInt == '\r' || byteAsInt == ' ' || stream.Position == stream.Length)

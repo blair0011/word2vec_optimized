@@ -504,7 +504,6 @@ namespace word2vecLib
                     if (vals.Length == 2)
                     {
                         var a = AddWordToVocab(vals[0]);
-
                         _vocab[a].Cn = int.Parse(vals[1]);
                     }
                 }

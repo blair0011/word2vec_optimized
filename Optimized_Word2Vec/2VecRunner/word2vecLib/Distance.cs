@@ -210,7 +210,8 @@ namespace word2vecLib
                 }
 
                 // End of Words (Count):
-                if (b == Words) b = -1;
+                if (b == Words)
+                    b = -1;
 
                 // Add the Position to bi[a] this is an Index:
                 bi[a] = b;
